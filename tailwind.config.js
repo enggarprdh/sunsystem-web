@@ -8,8 +8,18 @@ module.exports = {
   theme: {
   	extend: {
   		animation: {
-  			'spin-slow': 'spin 3s linear infinite'
+  			'spin-slow': 'spin 3s linear infinite',
+			'shake': 'shake 0.3s linear infinite',
   		},
+		keyframes: {
+				shake: {
+						'0%': { transform: 'translateX(0)' },
+						'25%': { transform: 'translateX(-1.5px)' },
+						'50%': { transform: 'translateX(2px)' },
+						'75%': { transform: 'translateX(-1.5px)' },
+						'100%': { transform: 'translateX(0)' },
+						},
+      },
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400" fill="none">
+  <rect width="600" height="400" fill="#f8f9fa"/>
+  <path d="M300 80C355.228 80 400 124.772 400 180C400 235.228 355.228 280 300 280C244.772 280 200 235.228 200 180C200 124.772 244.772 80 300 80Z" fill="#e9ecef"/>
+  <path d="M180 320C180 286.863 206.863 260 240 260H360C393.137 260 420 286.863 420 320V340C420 351.046 411.046 360 400 360H200C188.954 360 180 351.046 180 340V320Z" fill="#e9ecef"/>
+  <path d="M300 100C337.555 100 368 130.445 368 168C368 205.555 337.555 236 300 236C262.445 236 232 205.555 232 168C232 130.445 262.445 100 300 100Z" stroke="#6c757d" stroke-width="8"/>
+  <path d="M212 320C212 304.536 224.536 292 240 292H360C375.464 292 388 304.536 388 320V340H212V320Z" stroke="#6c757d" stroke-width="8"/>
+  <path d="M120 160L150 190M150 160L120 190" stroke="#6c757d" stroke-width="8" stroke-linecap="round"/>
+  <path d="M480 160L510 190M510 160L480 190" stroke="#6c757d" stroke-width="8" stroke-linecap="round"/>
+  <path d="M330 50L345 65M345 50L330 65" stroke="#6c757d" stroke-width="6" stroke-linecap="round"/>
+  <path d="M150 320L180 350M180 320L150 350" stroke="#6c757d" stroke-width="6" stroke-linecap="round"/>
+  <path d="M450 270L465 285M465 270L450 285" stroke="#6c757d" stroke-width="4" stroke-linecap="round"/>
+</svg>
