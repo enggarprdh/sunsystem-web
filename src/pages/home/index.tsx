@@ -1,5 +1,3 @@
-
-
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -35,9 +33,12 @@ export default function HomePage() {
 
                 {/* Right panel with content */}
                 <div className="flex flex-1 items-center justify-center p-6">
-                    <div className="w-full max-w-md">
+                    <div className="w-full">
                         <h1 className="text-2xl font-bold text-center">Welcome to the Home Page</h1>
                         <p className="text-center mt-4">You are now logged in. This is your secure dashboard.</p>
+                        <Button className="mt-6 w-full" onClick={() => navigate('/category')}>
+                            Go to Category Page
+                        </Button>
                     </div>
                 </div>
             </div>
