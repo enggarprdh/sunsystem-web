@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   Sheet,
-  SheetContent,
-  SheetTrigger
+  SheetContent
 } from '@/components/ui/sheet';
+
+interface SidebarProps {
+  onCollapsedChange?: (collapsed: boolean) => void;
+}
 import {
   LayoutDashboard,
   BarChart2,
@@ -18,8 +21,7 @@ import {
   Search,
   ArrowLeft,
   ArrowRight,
-  BookText,
-  X
+  BookText
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
@@ -64,49 +66,52 @@ const menuItems = [
   },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ onCollapsedChange }: SidebarProps) {
   const [open, setOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [mobileCollapsed, setMobileCollapsed] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const location = useLocation();
   const { logout } = useAuth();
+  
+  // Notify parent component when collapsed state changes
+  const handleCollapsedChange = (newCollapsedState: boolean) => {
+    setCollapsed(newCollapsedState);
+    if (onCollapsedChange) {
+      onCollapsedChange(newCollapsedState);
+    }
+  };
 
   const isActive = (href: string) => location.pathname === href;
-
   const toggleDarkMode = () => {
     setDarkMode((v) => !v);
     document.documentElement.classList.toggle('dark');
   };
-
+  
   // Mobile sidebar content
   const MobileSidebarContent = () => (
     <div className={cn(
-      'flex h-full bg-white dark:bg-zinc-900 transition-all fixed left-0',
+      'flex h-full bg-white dark:bg-zinc-900 transition-all',
       mobileCollapsed 
         ? 'w-16 items-center flex-col p-3' // Collapsed view
-        : 'w-full flex-col p-4' // Expanded view
+        : 'w-full flex-col p-4', // Expanded view
+      'rounded-r-xl' // Add rounded corners on right side
     )}>
-      
-      {/* Collapse button for mobile */}
+        {/* Close button for mobile */}
       <Button 
         variant="info_pro"
         className={cn(
           'w-8 h-8 rounded-full items-center justify-center',
           mobileCollapsed ? 'mb-4' : 'absolute right-2 top-12'
         )}
-        onClick={() => {
-          setMobileCollapsed((v) => !v);
-          // Jika sedang expanded dan akan di-collapse, tutup sheet
-          if (!mobileCollapsed) {
-            setOpen(false);
-          }
-        }}
-        aria-label="Collapse sidebar"
+        onClick={() => setOpen(false)}
+        aria-label="Close sidebar"
         type="button"
       >
-        {mobileCollapsed ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
+        <ArrowLeft className="w-4 h-4" />
       </Button>
+      
+      
 
       {/* Rest of mobile sidebar content */}
       {!mobileCollapsed && (
@@ -232,27 +237,20 @@ export default function Sidebar() {
         </nav>
       )}
     </div>
-  );
-
-  // Desktop sidebar content
+  );  // Desktop sidebar content
   const DesktopSidebarContent = () => (
     <div
       className={cn(
-        'flex flex-col h-full rounded-2xl shadow-xl bg-white dark:bg-zinc-900 transition-all',
-        'w-64',
-        collapsed && 'w-20',
+        'flex flex-col h-full bg-white dark:bg-zinc-900 transition-all',
+        'w-full',
         'p-4',
         'relative',
-        'my-4',
         'min-h-[90vh]'
       )}
-      style={{ minWidth: collapsed ? 80 : 256, maxWidth: collapsed ? 80 : 256 }}
-    >
-      {/* Collapse button */}
-      <Button 
+    >      {/* Collapse button - for width toggle only */}      <Button 
         variant="info_pro"
         className="absolute -right-4 top-8 w-8 h-8 rounded-full items-center justify-center transition"
-        onClick={() => setCollapsed((v) => !v)}
+        onClick={() => handleCollapsedChange(!collapsed)}
         aria-label="Collapse sidebar"
         type="button"
       >
@@ -335,40 +333,64 @@ export default function Sidebar() {
             className={cn('ml-auto', collapsed && 'mx-auto')}
           >
             <span className="sr-only">Toggle dark mode</span>
-          </Switch>
-          <span className="ml-2">
+          </Switch>          <span className="ml-2">
             {darkMode ? <Sun className="w-4 h-4 text-yellow-400" /> : <Moon className="w-4 h-4 text-zinc-500" />}
           </span>
         </div>
       </div>
     </div>
   );
-
-  // Mobile sidebar with Sheet component
+  
+  // Mobile sidebar with Sheet component and hamburger menu always visible
   const MobileSidebar = (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-white dark:bg-zinc-900 shadow border border-zinc-200 dark:border-zinc-700">
-          <Menu className="h-6 w-6 text-zinc-700 dark:text-zinc-200" />
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="left" className="p-0 bg-transparent border-none">
-        <MobileSidebarContent />
-      </SheetContent>
-    </Sheet>
+    <>
+      {/* Hamburger menu button - always visible */}
+      <Button 
+        onClick={() => setOpen(true)}
+        className="lg:hidden fixed top-4 left-4 z-40 p-2 rounded-lg bg-white dark:bg-zinc-900 shadow border border-zinc-200 dark:border-zinc-700"
+      >
+        <Menu className="h-6 w-6 text-zinc-700 dark:text-zinc-200" />
+      </Button>
+      
+      {/* Sheet for sidebar */}
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetContent 
+          side="left" 
+          className={cn(
+            "p-0 bg-transparent border-none transition-transform",
+            open ? "translate-x-0" : "-translate-x-full"
+          )}
+        >
+          <MobileSidebarContent />
+        </SheetContent>
+      </Sheet>
+    </>
+  );  // Desktop sidebar with Sheet component (always visible, just transitions width)
+  const DesktopSidebar = (
+    <div className="hidden lg:block">
+      <Sheet open={true}>
+        <SheetContent 
+          side="left" 
+          className={cn(
+            "p-0 bg-transparent border-none transition-all duration-300",
+            collapsed ? "!w-20 !max-w-20" : "!w-64 !max-w-64",
+            "!shadow-xl !rounded-2xl !my-4 !overflow-visible"
+          )}
+        >
+          <DesktopSidebarContent />
+        </SheetContent>
+      </Sheet>
+    </div>
   );
-
   return (
     <>
-      {/* Mobile Sidebar - Only show toggle button by default */}
+      {/* Mobile Sidebar with toggle button */}
       <div className="lg:hidden">
         {MobileSidebar}
       </div>
       
-      {/* Desktop Sidebar - Fully hidden on mobile */}
-      <div className="hidden lg:block">
-        <DesktopSidebarContent />
-      </div>
+      {/* Desktop Sidebar with Sheet component */}
+      {DesktopSidebar}
     </>
   );
 }

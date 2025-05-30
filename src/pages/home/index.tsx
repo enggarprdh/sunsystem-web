@@ -4,17 +4,14 @@ import { useNavigate } from "react-router-dom";
 
 export default function HomePage() {
     const { logout } = useAuth();
-    const navigate = useNavigate();
-
-    const handleLogout = () => {
+    const navigate = useNavigate();    const handleLogout = () => {
         logout();
         navigate("/login");
     };
-
+    
     return (
-        <div className="min-h-screen flex flex-col">
-            {/* Header with logout */}
-            <header className="bg-primary text-white p-4 flex justify-between items-center">
+        <div className="h-full flex flex-col">            {/* Header with logout */}
+            <header className="bg-primary text-white p-2 px-3 sm:p-0 flex justify-between items-center">
                 <h2 className="text-xl font-semibold">5unSystem Dashboard</h2>
                 <Button variant="skyblue" onClick={handleLogout} className="text-white hover:bg-primary-dark">
                     Logout
@@ -29,10 +26,8 @@ export default function HomePage() {
                         alt="Home"
                         className="max-w-full max-h-full object-contain"
                     />
-                </div>
-
-                {/* Right panel with content */}
-                <div className="flex flex-1 items-center justify-center p-6">
+                </div>                {/* Right panel with content */}
+                <div className="flex flex-1 items-center justify-center p-4 sm:p-6">
                     <div className="w-full">
                         <h1 className="text-2xl font-bold text-center">Welcome to the Home Page</h1>
                         <p className="text-center mt-4">You are now logged in. This is your secure dashboard.</p>

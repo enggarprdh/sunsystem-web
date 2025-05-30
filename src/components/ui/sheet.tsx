@@ -1,6 +1,5 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
-import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
@@ -10,9 +9,37 @@ interface SheetProps {
   children?: React.ReactNode
 }
 
-const Sheet: React.FC<SheetProps> = ({ children }) => {
-  // Catatan: open dan onOpenChange tidak digunakan untuk implementasi sederhana
-  return <div className="relative">{children}</div>
+const Sheet: React.FC<SheetProps> = ({ children, open, onOpenChange }) => {
+  return (
+    <div className="relative" data-state={open ? "open" : "closed"}>
+      {React.Children.map(children, child => {
+        if (React.isValidElement(child)) {
+          // Only pass open/onOpenChange if the child accepts them
+          const childProps: Record<string, any> = {};
+          
+          // Safely check if child props has open or onOpenChange
+          const hasOpenProp = child.props && typeof child.props === "object" && "open" in child.props;
+          const hasOpenChangeProp = child.props && typeof child.props === "object" && "onOpenChange" in child.props;
+          
+          if (hasOpenProp) {
+            childProps.open = open;
+          }
+          
+          if (hasOpenChangeProp) {
+            childProps.onOpenChange = onOpenChange;
+          }
+          
+          // Add data-state attribute for animation
+          childProps["data-state"] = open ? "open" : "closed";
+          
+          return Object.keys(childProps).length > 0 
+            ? React.cloneElement(child, childProps) 
+            : child;
+        }
+        return child;
+      })}
+    </div>
+  );
 }
 
 const SheetTrigger: React.FC<React.HTMLAttributes<HTMLButtonElement> & { asChild?: boolean }> = ({ 
@@ -81,22 +108,28 @@ interface SheetContentProps extends React.HTMLAttributes<HTMLDivElement>,
 const SheetContent = React.forwardRef<
   HTMLDivElement,
   SheetContentProps
->(({ side = "right", className, children, ...props }, ref) => (
-  <SheetPortal>
-    <SheetOverlay />
-    <div
-      ref={ref}
-      // Styling minimal tanpa sheetVariants, hanya untuk sidebar mobile kiri
-      className={cn(
-        "fixed inset-y-0 left-0 w-3/4 max-w-sm bg-background z-50 transition-all",
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </div>
-  </SheetPortal>
-))
+>(({ side = "right", className, children, ...props }, ref) => {
+  // Get open state from data-state prop safely
+  const dataState = props["data-state" as keyof typeof props];
+  const isOpen = dataState === "open";
+  
+  return (
+    <SheetPortal>
+      <SheetOverlay />
+      <div
+        ref={ref}
+        className={cn(
+          "fixed inset-y-0 left-0 w-3/4 max-w-sm bg-background z-50 transition-all",
+          isOpen ? "translate-x-0" : "-translate-x-full", // Hide when closed
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </div>
+    </SheetPortal>
+  );
+})
 SheetContent.displayName = "SheetContent"
 
 const SheetHeader = ({
