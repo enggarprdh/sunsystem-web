@@ -1,3 +1,4 @@
+import { apiLogin } from '@/api/apiAuth';
 import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
 
@@ -21,6 +22,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Mock successful login
       if (username && password) {
         // Store token in localStorage
+        let result = await apiLogin(username, password);
+        console.log(result);
         localStorage.setItem('userToken', 'mock-jwt-token');
         setIsAuthenticated(true);
         return true;
