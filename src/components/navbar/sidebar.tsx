@@ -27,6 +27,7 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import { useSelector } from 'react-redux';
 
 const menuItems = [
   {
@@ -72,7 +73,9 @@ export default function Sidebar({ onCollapsedChange }: SidebarProps) {
   const [mobileCollapsed, setMobileCollapsed] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const location = useLocation();
-  const { logout } = useAuth();
+  const { logout } = useAuth();  
+  const userProfileState = useSelector((state: any) => state.user.userInfo);
+  
   
   // Notify parent component when collapsed state changes
   const handleCollapsedChange = (newCollapsedState: boolean) => {
@@ -267,8 +270,8 @@ export default function Sidebar({ onCollapsedChange }: SidebarProps) {
         />
         {!collapsed && (
           <div>
-            <div className="font-semibold text-base leading-tight text-zinc-900 dark:text-white">Stella Army</div>
-            <div className="text-xs text-zinc-500 dark:text-zinc-400">Web developer</div>
+            <div className="font-semibold text-base leading-tight text-zinc-900 dark:text-white">{userProfileState?.userName || 'User'}</div>
+            <div className="text-xs text-zinc-500 dark:text-zinc-400">{userProfileState?.role || 'User'}</div>
           </div>
         )}
       </div>

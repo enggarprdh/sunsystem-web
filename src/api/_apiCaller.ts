@@ -31,7 +31,10 @@ const apiCaller = async (method:string, url:string, body:any, token:string = '',
 
     try {
         let response = await axios(axiosConfig_);
-        return response;
+        if (response.status !== 200) {
+            throw new Error(`API call failed with status ${response.status}`);
+        }
+        return response.data;
     }catch (error) {
         await onError(error, method, url, body, token, addConfig);
     }
