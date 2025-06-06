@@ -1,10 +1,39 @@
+import Container from "@/components/Container";
+import Header from "@/components/header";
+import Content from "@/components/content"
+import { Button } from "@/components/ui/button";
+import { Plus, Download } from "lucide-react";
 const UserPage = () => {
-  console.log('UserPage component rendered');
+
+  const ListButton = () => {
+    let buttons = [];
+    buttons.push(
+      <Button key="edit" variant="warning_pro">
+        <Download />
+        <span className="hidden md:block">Export</span>
+      </Button>
+    );
+    buttons.push(
+      <Button key="add" variant="success_pro">
+        <Plus /> 
+        <span className="hidden md:block">Add New</span>
+      </Button>
+    );
+    
+    return buttons;
+  }
+
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center p-0 m-0">
-      <h1 className="text-2xl font-bold mb-4">User Page</h1>
-      <p>Ini adalah halaman user.</p>
-    </div>
+    <Container>
+      <Header
+        title="Users"
+        description="Manage your users here."
+        ButtonComponents={ListButton()}
+      />
+      <Content>
+
+      </Content>
+    </Container>
   );
 };
 
