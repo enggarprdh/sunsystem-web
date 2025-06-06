@@ -1,19 +1,54 @@
+import React, { Suspense, Component, useMemo } from 'react'
+import type { ErrorInfo, ReactNode } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { RouteGuard } from './components/ProtectedRoute'
 import Layout from './components/layout'
 import LoginPage from './pages/login'
-import HomePage from './pages/home'
-import CategoryPage from './pages/category'
 import { useAuth } from './contexts/AuthContext'
+import { useSidebar } from './components/navbar/hooks/useSideBar'
 
-// Placeholder pages for new routes
-const DashboardPage = () => <div>Dashboard Page</div>
-const MasterItemPage = () => <div>Master Item Page</div>
-const MasterCategoryPage = () => <div>Master Category Page</div>
-const SettingsPage = () => <div>Settings Page</div>
+// Tambahkan komponen fallback untuk loading
+const LoadingFallback = () => <div className="p-4">Loading...</div>;
+
+// Tambahkan komponen untuk error boundary
+const ErrorFallback = () => <div className="p-4">Failed to load page. Please try again.</div>;
+
+// Error Boundary Class Component
+interface ErrorBoundaryProps {
+  children: ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+}
+
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(_: Error): ErrorBoundaryState {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    console.error("Error caught by ErrorBoundary:", error, errorInfo);
+  }
+
+  render(): ReactNode {
+    if (this.state.hasError) {
+      return <ErrorFallback />;
+    }
+
+    return this.props.children;
+  }
+}
+
 
 const AppRoutes = () => {
   const { isAuthenticated } = useAuth();
+  const { menuItems } = useSidebar();
 
   // Public routes (available without authentication)
   const publicRoutes = [
@@ -23,33 +58,60 @@ const AppRoutes = () => {
     }
   ]
 
-  // Protected routes (require authentication)
-  const protectedRoutes = [
-    {
-      path: '/home',
-      element: <HomePage />,
-    },
-    {
-      path: '/dashboard',
-      element: <DashboardPage />,
-    },
-    {
-      path: '/master/item',
-      element: <MasterItemPage />,
-    },
-    {
-      path: '/master/category',
-      element: <MasterCategoryPage />,
-    },
-    {
-      path: '/settings',
-      element: <SettingsPage />,
-    },
-    {
-      path: '/category',
-      element: <CategoryPage />,
-    }
-  ]
+  // Memoize protected routes generation to prevent unnecessary re-computation
+  const protectedRoutes = useMemo(() => {
+    let routes: { path: string, element: React.ReactElement }[] = [];
+    
+    // Dynamically generate protected routes based on menu items
+    menuItems.forEach((item) => {
+      if (item) {
+        // Check if the item has a submenu
+        if (item.submenu && item.submenu.length > 0) {
+          item.submenu.forEach((subItem) => {
+            try {
+              // Perbaiki cara import dengan menyimpan path komponen
+              const componentPath = `./pages${subItem.href}`;
+              const LazyComponent = React.lazy(() => import(componentPath));
+              const route = {
+                path: subItem.href,
+                element: (
+                  <ErrorBoundary>
+                    <Suspense fallback={<LoadingFallback />}>
+                      <LazyComponent />
+                    </Suspense>
+                  </ErrorBoundary>
+                )
+              }
+              routes.push(route);
+            } catch (error) {
+              console.error(`Failed to load route for: ${subItem.href}`, error);
+            }
+          });
+        } else {
+          try {
+            // Perbaiki cara import dengan menyimpan path komponen
+            const componentPath = `./pages${item.href}`;
+            const LazyComponent = React.lazy(() => import(componentPath));
+            const route = {
+              path: item.href,
+              element: (
+                <ErrorBoundary>
+                  <Suspense fallback={<LoadingFallback />}>
+                    <LazyComponent />
+                  </Suspense>
+                </ErrorBoundary>
+              )
+            }
+            routes.push(route);
+          } catch (error) {
+            console.error(`Failed to load route for: ${item.href}`, error);
+          }
+        }
+      }
+    });
+    
+    return routes;
+  }, [menuItems]);
 
   return (
     <Routes>
@@ -79,7 +141,7 @@ const AppRoutes = () => {
       <Route 
         path="*" 
         element={
-          <Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />
+          <Navigate to={isAuthenticated ? "/home" : "/login"} replace />
         } 
       />
     </Routes>

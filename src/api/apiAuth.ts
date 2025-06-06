@@ -1,18 +1,12 @@
+import type { UserInfo } from "@/models/userInfo";
 import { apiCaller } from "./_apiCaller";
-type LoginResponse = {
-    token: string;
-    refreshToken: string;
-    userName:string;
-    role:string;
-    message: string;
-}
 
 type LoginPayload = {
     userName: string;
     password: string;
 }
 
-const apiLogin = async (username: string, password: string): Promise<LoginResponse> => {
+const apiLogin = async (username: string, password: string): Promise<UserInfo> => {
     let body: LoginPayload = {
         userName: username,
         password: password
@@ -21,13 +15,13 @@ const apiLogin = async (username: string, password: string): Promise<LoginRespon
     if (response?.status == 200) {
 
     }
-    console.log('Login response:', response);
     if (response && response.data) {
         return {
             token: response.data.token ?? "",
             refreshToken: response.data.refreshToken ?? "",
             userName: response.data.userName ?? "",
             role: response.data.role ?? "",
+            menu: response.data.menu ?? [],
             message: 'Login successful'
         };
     } else {

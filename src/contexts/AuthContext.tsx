@@ -14,10 +14,19 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
-    // Check if user token exists in localStorage when app initializes
-    secureStorage.getItem('userToken') !== null
-  );
+  // Inisialisasi state isAuthenticated dengan memeriksa token di localStorage
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    const userInfo = secureStorage.getItem('userInfo');
+    if (userInfo) {
+      try {
+        const parsedUserInfo = JSON.parse(userInfo);
+        return !!(parsedUserInfo && parsedUserInfo.token);
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  });
   
   // Load user data from localStorage when component mounts
   useEffect(() => {
@@ -25,7 +34,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (userInfo) {
       try {
         const parsedUserInfo = JSON.parse(userInfo);
-        store.dispatch(updateUserInfo(parsedUserInfo));
+        // Check if userInfo has a valid token
+        if (parsedUserInfo && parsedUserInfo.token) {
+          setIsAuthenticated(true);
+          store.dispatch(updateUserInfo(parsedUserInfo));
+        }
       } catch (error) {
         console.error('Error parsing stored user info:', error);
       }
@@ -44,8 +57,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }        
         // Store user info in Redux
         store.dispatch(updateUserInfo(result));
-
-        // Also save user info in localStorage for persistence between refreshes
+        
+        // Save user info securely
         secureStorage.setItem('userInfo', JSON.stringify(result));
         setIsAuthenticated(true);
         return true;
