@@ -6,8 +6,7 @@ type HeaderProps = {
     ButtonComponents?: React.ReactNode[];
 };
 
-const Header = ({ title, description, ButtonComponents}: HeaderProps) => {
-    console.log(ButtonComponents);
+const Header = ({ title, description, ButtonComponents}: HeaderProps) => {    
     return (
         <div className="flex justify-between bg-blue-500 text-white items-center pr-4">
             <div className="flex flex-col md:p-4 xs:pl-14 xs:py-2">
