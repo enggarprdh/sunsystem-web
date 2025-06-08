@@ -100,7 +100,7 @@ export const Pagination = ({
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between px-2 py-3 border-t border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 gap-2">
       {/* Info Text - Hidden on very small screens */}
-      <div className="hidden sm:flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300">
+      <div className="hidden sm:flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300 flex-0">
         <span>
           Showing 
           <span className="font-medium mx-1">
@@ -114,30 +114,34 @@ export const Pagination = ({
           <span className="font-medium mx-1">{totalItems}</span> 
           entries
         </span>
+
+
       </div>
 
-      {/* Simple info for mobile */}
-      <div className="sm:hidden text-sm text-gray-700 dark:text-gray-300">
-        Page {currentPage} of {totalPages}
-      </div>
+        {/* Page size selector */}
+        {onPageSizeChange && (
+          <div className="flex flex-1 items-center">
+            <div className="sm:hidden text-sm text-gray-700 dark:text-gray-300">
+              Page {currentPage} of {totalPages}
+            </div>
+            <span className="mr-2 text-sm text-gray-700 dark:text-gray-300">Show</span>
+            <select
+              value={pageSize}
+              onChange={handlePageSizeChange}
+              className="block w-16 px-1 py-1 text-sm bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+              {pageSizeOptions.map(size => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       
-      {/* Page size selector */}
-      {onPageSizeChange && (
-        <div className="flex items-center">
-          <span className="mr-2 text-sm text-gray-700 dark:text-gray-300">Show</span>
-          <select
-            value={pageSize}
-            onChange={handlePageSizeChange}
-            className="block w-16 px-1 py-1 text-sm bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-          >
-            {pageSizeOptions.map(size => (
-              <option key={size} value={size}>
-                {size}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
+      
+      
+  
       
       {/* Pagination Controls */}
       <div className="flex items-center space-x-1">

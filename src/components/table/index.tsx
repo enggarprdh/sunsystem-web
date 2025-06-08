@@ -5,6 +5,7 @@ type TableProps = {
     columns?: { header: string; 
                 accessorKey: string, 
                 type:string | "text" | "number" | "date" | "boolean" | "button", 
+                headerAlign?: string | "left" | "center" | "right";
                 cell:any }[]; // Define the structure of your columns
     data?: any[]; // You can define a more specific type for your data
     onRowClick?: (row: any) => void;
@@ -13,13 +14,14 @@ type TableProps = {
     // Pagination props
     pagination?: boolean;
     paginationType?: "client" | "server";
-    pageSize?: number | 5 | 10 | 20 | 30 | 50 | 100; // Default page size
+    pageSize?: number;
     pageSizeOptions?: number[];
     currentPage?: number;
     totalItems?: number;
     onPageChange?: (page: number) => void;
     onPageSizeChange?: (pageSize: number) => void;
     isLoading?: boolean;
+    // Optional prop for header alignment
 }
 
 const Table = ({ 
@@ -35,7 +37,7 @@ const Table = ({
     totalItems: controlledTotalItems,
     onPageChange,
     onPageSizeChange,
-    isLoading = false,
+    isLoading = false
 }: TableProps) => {
     // State for client-side pagination
     const [clientCurrentPage, setClientCurrentPage] = useState(1);
@@ -108,11 +110,11 @@ const Table = ({
     const renderCellType = (type: string, value: any, row: any, cell:any) => {
         switch (type) {
             case "text":
-                return <span>{value}</span>;
+                return <span>{cell({row})}</span>;
             case "number":
-                return <span>{value.toLocaleString()}</span>;
+                return <span>{cell({row})}</span>;
             case "date":
-                return <span>{new Date(value).toLocaleDateString()}</span>;
+                return <span>{cell({row})}</span>;
             case "boolean":
                 return <span>{value ? "Yes" : "No"}</span>;            case "button":
                 return (
@@ -141,14 +143,14 @@ const Table = ({
         <div className="w-full overflow-x-auto">
             <div className="min-w-full bg-white dark:bg-zinc-900">
                 {/* Single table with sticky header */}
-                <div className="min-w-full max-h-[calc(100vh-16rem)] overflow-y-auto">
+                <div className="min-w-full md:max-h-[calc(100vh-16rem)] xs:max-h-[calc(109vh-16rem)] overflow-y-auto">
                     <table className="min-w-full bg-white dark:bg-zinc-900 table-fixed">
                         <thead>
                             <tr className="bg-gray-50 dark:bg-zinc-900/90 border-b border-gray-200 dark:border-zinc-700">
                                 {columns.map((column, index) => (
                                     <th 
                                         key={index}
-                                        className="p-3 text-center font-medium text-gray-600 dark:text-white text-sm sticky top-0 bg-gray-50 dark:bg-zinc-900/90 z-10"
+                                        className={`p-3 text-${!column.headerAlign? 'left' : column.headerAlign} font-medium text-gray-600 dark:text-white text-sm sticky top-0 bg-gray-50 dark:bg-zinc-900/90 z-10`}
                                     >
                                         {column.header}
                                     </th>

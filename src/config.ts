@@ -11,7 +11,7 @@ const Config = (): ConfigProps => {
         };
     } else {
         return {
-            apiUrl: 'https://api.example.com',
+            apiUrl: 'https://localhost:7294/api',
         };
     }
 }

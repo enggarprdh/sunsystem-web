@@ -1,11 +1,10 @@
-import React, { Suspense, Component, useMemo } from 'react'
+import React, { Suspense, Component } from 'react'
 import type { ErrorInfo, ReactNode } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { RouteGuard } from './components/ProtectedRoute'
 import Layout from './components/layout'
 import LoginPage from './pages/login'
 import { useAuth } from './contexts/AuthContext'
-import { useSidebar } from './components/navbar/hooks/useSideBar'
 
 // Tambahkan komponen fallback untuk loading
 const LoadingFallback = () => <div className="p-4">Loading...</div>;
@@ -48,7 +47,6 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
 const AppRoutes = () => {
   const { isAuthenticated } = useAuth();
-  const { menuItems } = useSidebar();
 
   // Public routes (available without authentication)
   const publicRoutes = [
@@ -57,61 +55,66 @@ const AppRoutes = () => {
       element: <LoginPage />,
     }
   ]
+  // Define static route components
+  const LazyHomePage = React.lazy(() => import('./pages/home'));
+  const LazyUserPage = React.lazy(() => import('./pages/users'));
+  const LazyRolePage = React.lazy(() => import('./pages/roles'));
+  const LazyRolePrivilegePage = React.lazy(() => import('./pages/roleprivileges'));
+  const LazyCategoryPage = React.lazy(() => import('./pages/category'));
 
-  // Memoize protected routes generation to prevent unnecessary re-computation
-  const protectedRoutes = useMemo(() => {
-    let routes: { path: string, element: React.ReactElement }[] = [];
-    
-    // Dynamically generate protected routes based on menu items
-    menuItems.forEach((item) => {
-      if (item) {
-        // Check if the item has a submenu
-        if (item.submenu && item.submenu.length > 0) {
-          item.submenu.forEach((subItem) => {
-            try {
-              // Perbaiki cara import dengan menyimpan path komponen
-              const componentPath = `./pages${subItem.href}`;
-              const LazyComponent = React.lazy(() => import(componentPath));
-              const route = {
-                path: subItem.href,
-                element: (
-                  <ErrorBoundary>
-                    <Suspense fallback={<LoadingFallback />}>
-                      <LazyComponent />
-                    </Suspense>
-                  </ErrorBoundary>
-                )
-              }
-              routes.push(route);
-            } catch (error) {
-              console.error(`Failed to load route for: ${subItem.href}`, error);
-            }
-          });
-        } else {
-          try {
-            // Perbaiki cara import dengan menyimpan path komponen
-            const componentPath = `./pages${item.href}`;
-            const LazyComponent = React.lazy(() => import(componentPath));
-            const route = {
-              path: item.href,
-              element: (
-                <ErrorBoundary>
-                  <Suspense fallback={<LoadingFallback />}>
-                    <LazyComponent />
-                  </Suspense>
-                </ErrorBoundary>
-              )
-            }
-            routes.push(route);
-          } catch (error) {
-            console.error(`Failed to load route for: ${item.href}`, error);
-          }
-        }
-      }
-    });
-    
-    return routes;
-  }, [menuItems]);
+  // Define protected routes using static object array
+  const protectedRoutes = [
+    {
+      path: '/home',
+      element: (
+        <ErrorBoundary>
+          <Suspense fallback={<LoadingFallback />}>
+            <LazyHomePage />
+          </Suspense>
+        </ErrorBoundary>
+      )
+    },
+    {
+      path: '/users',
+      element: (
+        <ErrorBoundary>
+          <Suspense fallback={<LoadingFallback />}>
+            <LazyUserPage />
+          </Suspense>
+        </ErrorBoundary>
+      )
+    },
+    {
+      path: '/roles',
+      element: (
+        <ErrorBoundary>
+          <Suspense fallback={<LoadingFallback />}>
+            <LazyRolePage />
+          </Suspense>
+        </ErrorBoundary>
+      )
+    },
+    {
+      path: '/roleprivileges',
+      element: (
+        <ErrorBoundary>
+          <Suspense fallback={<LoadingFallback />}>
+            <LazyRolePrivilegePage />
+          </Suspense>
+        </ErrorBoundary>
+      )
+    },
+    {
+      path: '/category',
+      element: (
+        <ErrorBoundary>
+          <Suspense fallback={<LoadingFallback />}>
+            <LazyCategoryPage />
+          </Suspense>
+        </ErrorBoundary>
+      )
+    }
+  ];
 
   return (
     <Routes>

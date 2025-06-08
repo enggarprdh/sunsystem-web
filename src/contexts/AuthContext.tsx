@@ -72,7 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     secureStorage.removeItem('userInfo'); // Clear saved user info from localStorage
     // Reset Redux store user info
-    store.dispatch(updateUserInfo(null));
+    store.dispatch(updateUserInfo({}));
     setIsAuthenticated(false);
   };
 
