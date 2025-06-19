@@ -23,9 +23,10 @@ const buttonVariants = cva(
         info:"bg-blue-500 text-white shadow-sm hover:text-accent-foreground",
         info_pro:"cursor-pointer transition-all bg-blue-500 text-white px-6 py-2 rounded-lg border-blue-600 border-b-[4px] hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]",
         warning_pro:"cursor-pointer transition-all bg-orange-500 text-white px-6 py-2 rounded-lg border-orange-600 border-b-[4px] hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]",
+        outline_warning_pro:"cursor-pointer transition-all text-orange-500 px-6 py-2 rounded-lg border-orange-600 border-b-[4px] hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px] border-2 border-orange-600",
         danger_pro:"cursor-pointer transition-all bg-rose-500 text-white px-6 py-2 rounded-lg border-rose-600 border-b-[4px] hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]",
         success_pro:"cursor-pointer transition-all bg-green-500 text-white px-6 py-2 rounded-lg border-green-600 border-b-[4px] hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]",
-        outline_pro:"cursor-pointer transition-all bg-white-500 text-black dark:text-white px-6 py-2 rounded-lg border-blue-500 border-b-[4px] hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]"
+        outline_info_pro:"cursor-pointer transition-all bg-white-500 text-black dark:text-white px-6 py-2 rounded-lg border-blue-500 border-b-[4px] hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px] border-2 border-blue-500",
       },
       size: {
         default: "h-9 px-4 py-2",

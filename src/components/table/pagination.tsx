@@ -146,7 +146,7 @@ export const Pagination = ({
       {/* Pagination Controls */}
       <div className="flex items-center space-x-1">
         <Button
-          variant="outline_pro"
+          variant="outline_info_pro"
           size="sm"
           onClick={() => onPageChange(1)}
           disabled={!canPreviousPage || isLoading}
@@ -155,7 +155,7 @@ export const Pagination = ({
           <ChevronsLeft size={16} />
         </Button>
         <Button
-          variant="outline_pro"
+          variant="outline_info_pro"
           size="sm"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={!canPreviousPage || isLoading}
@@ -172,7 +172,7 @@ export const Pagination = ({
             ) : (
               <Button
                 key={index}
-                variant={currentPage === page ? "info" : "outline_pro"}
+                variant={currentPage === page ? "info_pro" : "outline_info_pro"}
                 size="sm"
                 onClick={() => onPageChange(Number(page))}
                 disabled={isLoading}
@@ -185,7 +185,7 @@ export const Pagination = ({
         </div>
         
         <Button
-          variant="outline_pro"
+          variant="outline_info_pro"
           size="sm"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={!canNextPage || isLoading}
@@ -194,7 +194,7 @@ export const Pagination = ({
           <ChevronRight size={16} />
         </Button>
         <Button
-          variant="outline_pro"
+          variant="outline_info_pro"
           size="sm"
           onClick={() => onPageChange(totalPages)}
           disabled={!canNextPage || isLoading}
