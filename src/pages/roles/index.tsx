@@ -17,13 +17,19 @@ const RolePage = () => {
   const ListButton = () => {
     let buttons = [];
     buttons.push(
-      <Button key="add" variant="success_pro">
+      <Button key="add" variant="success_pro" onClick={handleButtonAddNewRole}>
         <Plus /> 
         <span className="hidden md:block">Add New Role</span>
       </Button>
     );
     return buttons;
   }
+
+  const handleButtonAddNewRole = () => {
+    window.location.href = "/roles/add";
+    
+  }
+
   const handleRowClick = (row: any) => {
     console.log("Row clicked:", row);
     // Implement your row click logic here, e.g., navigate to a detail page
@@ -59,6 +65,8 @@ const RolePage = () => {
       isMounted = false;
     };
   }, []); // Empty dependency array means this only runs once on mount
+
+
 
   return (
     <Container>

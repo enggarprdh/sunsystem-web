@@ -59,8 +59,10 @@ const AppRoutes = () => {
   const LazyHomePage = React.lazy(() => import('./pages/home'));
   const LazyUserPage = React.lazy(() => import('./pages/users'));
   const LazyRolePage = React.lazy(() => import('./pages/roles'));
+  const LazyRoleFormPage = React.lazy(() => import('./pages/roles/rolesForm'));
   const LazyRolePrivilegePage = React.lazy(() => import('./pages/roleprivileges'));
   const LazyCategoryPage = React.lazy(() => import('./pages/category'));
+  
 
   // Define protected routes using static object array
   const protectedRoutes = [
@@ -90,6 +92,16 @@ const AppRoutes = () => {
         <ErrorBoundary>
           <Suspense fallback={<LoadingFallback />}>
             <LazyRolePage />
+          </Suspense>
+        </ErrorBoundary>
+      )
+    },
+    {
+      path: '/roles/add',
+      element: (
+        <ErrorBoundary>
+          <Suspense fallback={<LoadingFallback />}>
+            <LazyRoleFormPage />
           </Suspense>
         </ErrorBoundary>
       )
