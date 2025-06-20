@@ -50,7 +50,8 @@ export default function Sidebar({ onCollapsedChange }: SidebarProps) {
   const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({});
   const location = useLocation();
   const { logout } = useAuth();  
-  const userProfileState = useSelector((state: any) => state.user.userInfo);
+  // const userProfileState = useSelector((state: any) => state.user.userInfo);
+  const { userInfo } = useSelector((state: any) => state.dataSlicePersisted);
   const { menuItems } = useSidebar();
   
   // Notify parent component when collapsed state changes
@@ -350,8 +351,8 @@ export default function Sidebar({ onCollapsedChange }: SidebarProps) {
         />
         {!collapsed && (
           <div>
-            <div className="font-semibold text-base leading-tight text-zinc-900 dark:text-white">{userProfileState?.userName || 'User'}</div>
-            <div className="text-xs text-zinc-500 dark:text-zinc-400">{userProfileState?.role || 'User'}</div>
+            <div className="font-semibold text-base leading-tight text-zinc-900 dark:text-white">{userInfo?.userName || 'User'}</div>
+            <div className="text-xs text-zinc-500 dark:text-zinc-400">{userInfo?.role || 'User'}</div>
           </div>
         )}
       </div>
