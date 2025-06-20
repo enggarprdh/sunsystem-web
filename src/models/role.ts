@@ -13,3 +13,7 @@ export type RoleResponse = {
     roleName: string;
     deleted:boolean
 }
+
+export type RoleCreateRequest = {
+    roleName: string;
+}

@@ -5,12 +5,31 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import FixedBottom from "@/components/fixedBottom";
+import type { RoleCreateRequest } from "@/models/role";
+import { useState } from "react";
+import { useApiRoles } from "@/api/apiRole";
 
 const RolesForm = () => {
 
+    const apiRoles = useApiRoles();
+    const [data, setData] = useState<RoleCreateRequest>({roleName: ""});
 
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setData(prevData => ({
+            ...prevData,
+            [name]: value
+        }));
+    }
     const handleBack = () => {
         window.location.href = "/roles";
+    }
+
+    const onSubmit = async () => {
+        const response: any = await apiRoles.apiCreateRole(data);
+        console.log("Response from API:", response);
+        
     }
     
 
@@ -25,7 +44,7 @@ const RolesForm = () => {
                     <CardContent className="p-4">
                         <div className="space-y-2">
                             <label> Role Name </label>     
-                            <Input type="text" placeholder="Enter role name"/>
+                            <Input type="text" name="roleName" onChange={handleInputChange} placeholder="Enter role name"/>
                         </div> 
                     </CardContent>
                 </Card>
@@ -39,7 +58,7 @@ const RolesForm = () => {
                         <Button variant="outline_warning_pro" onClick={handleBack}>
                             Back
                         </Button>
-                        <Button variant="success_pro" className="text-white">
+                        <Button variant="success_pro" onClick={onSubmit} className="text-white">
                             Save
                         </Button>
                     </div>

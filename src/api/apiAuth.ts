@@ -11,7 +11,7 @@ const apiLogin = async (username: string, password: string): Promise<UserInfo> =
         userName: username,
         password: password
     };
-    const response = await apiCaller('POST', '/auth/login', body, "", null);
+    const response = await apiCaller('POST', '/auth/login', body);
     if (response?.status == 200) {
 
     }
