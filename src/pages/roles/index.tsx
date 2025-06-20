@@ -7,6 +7,7 @@ import { Plus, Eye, Pencil, Trash2 } from "lucide-react";
 import { Table } from "@/components/table";
 import { useApiRoles } from "@/api/apiRole";
 import type { RoleList } from "@/models/role";
+import { Input } from "@/components/ui/input";
 
 
 const RolePage = () => {
@@ -76,6 +77,11 @@ const RolePage = () => {
         ButtonComponents={ListButton()}
       />
       <Content>
+        
+          <Input
+            type="text"
+            placeholder="Search roles..."
+            className="mb-4"/>
           <Table
             columns={[
               { 

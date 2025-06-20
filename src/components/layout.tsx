@@ -35,7 +35,7 @@ export function Layout() {
     
   return (
     <div className="flex h-screen bg-background overflow-hidden">
-      <Sidebar onCollapsedChange={handleSidebarCollapse} />      <div className={`flex-1 bg-muted flex flex-col overflow-auto no-scrollbar
+      <Sidebar onCollapsedChange={handleSidebarCollapse} />      <div className={`flex-1 bg-muted flex flex-col overflow-hidden no-scrollbar
         p-0 pt-0 
         sm:p-0 sm:pl-20 
         md:p-3 md:pl-22
