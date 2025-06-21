@@ -1,19 +1,19 @@
-export type RoleList = {
+export type Role = {
     roleID:string;
-    roleName: string;
+    roleName: string | '';
+    deleted: boolean | null;
 }
 
 export type RoleListResponse = {
-    data:RoleList[];
+    data:Role[];
     dataLength: number;
 }
 
 export type RoleResponse = {
-    roleID:string;
-    roleName: string;
-    deleted:boolean
+    data:Role;
+    
 }
 
-export type RoleCreateRequest = {
+export type RoleCreateUpdateRequest = {
     roleName: string;
 }

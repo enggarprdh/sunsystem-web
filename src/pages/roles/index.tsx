@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Plus, Eye, Pencil, Trash2 } from "lucide-react";
 import { Table } from "@/components/table";
 import { useApiRoles } from "@/api/apiRole";
-import type { RoleList } from "@/models/role";
+import type { Role } from "@/models/role";
 import { Input } from "@/components/ui/input";
 
 
 const RolePage = () => {
   const apiRoles = useApiRoles();
-  const [rolesData, setRolesData] = useState<RoleList[]>([]);
+  const [rolesData, setRolesData] = useState<Role[]>([]);
   const [pagination, setPagination] = useState({page: 1, pageSize: 10, totalItems: 0});
 
   const ListButton = () => {
@@ -31,8 +31,9 @@ const RolePage = () => {
     
   }
 
-  const handleRowClick = (row: any) => {
-    console.log("Row clicked:", row);
+  const handleRowClick = (row: Role) => {
+    const roleID = row.roleID; // Assuming roleID is a property of the row
+    window.location.href = `/roles/edit/${roleID}`;
     // Implement your row click logic here, e.g., navigate to a detail page
   }
 
@@ -95,10 +96,9 @@ const RolePage = () => {
                 accessorKey: "actions", 
                 type:"button", 
                 headerAlign: "center",
-                cell: ({ row }: { row: { [key: string]: any } }) => (
+                cell: ({ row }: { row: Role }) => (
                   <div className="flex space-x-2 justify-center">
                     <Button variant="info_pro" size="sm" onClick={() => handleRowClick(row)}><Eye /></Button>
-                    <Button variant="warning_pro" size="sm"><Pencil/></Button>
                     <Button variant="danger_pro" size="sm"><Trash2/></Button>
                   </div>
                 ) 

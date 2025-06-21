@@ -1,10 +1,12 @@
-import type { RoleCreateRequest, RoleListResponse } from "@/models/role";
+import type { RoleCreateUpdateRequest, Role, RoleListResponse, RoleResponse } from "@/models/role";
 import { apiCaller } from "./_apiCaller";
 
 
 interface ApiRoles {
     apiGetRoleList: (page:number, row:number) => Promise<RoleListResponse>;
-    apiCreateRole: (data: RoleCreateRequest) => Promise<any>;
+    apiCreateRole: (data: RoleCreateUpdateRequest) => Promise<any>;
+    apiGetRole: (roleID: string) => Promise<RoleResponse>;
+    apiUpdateRole: (data: RoleCreateUpdateRequest, roleID: string) => Promise<any>;
 }
 
 
@@ -16,8 +18,18 @@ export function useApiRoles(): ApiRoles {
         return response as RoleListResponse;
     };
 
-    const apiCreateRole = async (data: RoleCreateRequest): Promise<any> => {
+    const apiGetRole = async (roleID: string): Promise<RoleResponse> => {
+        const response = await apiCaller('GET', `/role/${roleID}`, null, null);
+        return response;
+    };
+
+    const apiCreateRole = async (data: RoleCreateUpdateRequest): Promise<any> => {
         const response = await apiCaller('POST', '/role', data);
+        return response;
+    };
+
+    const apiUpdateRole = async (data: RoleCreateUpdateRequest, roleID: string): Promise<any> => {
+        const response = await apiCaller('PUT', `/role/${roleID}`, data);
         return response;
     };
 
@@ -26,6 +38,8 @@ export function useApiRoles(): ApiRoles {
 
     return {
         apiGetRoleList,
-        apiCreateRole
+        apiCreateRole,
+        apiGetRole,
+        apiUpdateRole
     };
 }

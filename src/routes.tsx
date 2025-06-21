@@ -107,6 +107,16 @@ const AppRoutes = () => {
       )
     },
     {
+      path: '/roles/edit/:id',
+      element: (
+        <ErrorBoundary>
+          <Suspense fallback={<LoadingFallback />}>
+            <LazyRoleFormPage />
+          </Suspense>
+        </ErrorBoundary>
+      )
+    },
+    {
       path: '/roleprivileges',
       element: (
         <ErrorBoundary>

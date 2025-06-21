@@ -5,15 +5,44 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import FixedBottom from "@/components/fixedBottom";
-import type { RoleCreateRequest } from "@/models/role";
-import { useState } from "react";
+import type { RoleCreateUpdateRequest } from "@/models/role";
+import { useEffect, useState } from "react";
 import { useApiRoles } from "@/api/apiRole";
+import { useParams, useLocation } from "react-router-dom";
 
 const RolesForm = () => {
 
     const apiRoles = useApiRoles();
-    const [data, setData] = useState<RoleCreateRequest>({roleName: ""});
+    const [data, setData] = useState<RoleCreateUpdateRequest>({roleName: ""});
+    const [isEdit, setIsEdit] = useState<boolean>(false);
+    const {id } = useParams();
+    const location = useLocation();
 
+
+    useEffect(() => {
+            const checkIfEdit = async () => {
+                if (location.pathname.includes("/edit/") && id) {
+                    setIsEdit(true);
+                    await fetchData();
+                } else {
+                    setIsEdit(false);
+                }
+            }
+            checkIfEdit();
+    }, [id, location.pathname]);
+
+    const fetchData = async () => {
+        if (id) {
+            const response = await apiRoles.apiGetRole(id);
+            if (response) {
+                setData({
+                    roleName: response.data.roleName
+                });
+            }
+        } else {
+            // handle the case when id is undefined, e.g., show an error or return early
+        }
+    }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -27,9 +56,23 @@ const RolesForm = () => {
     }
 
     const onSubmit = async () => {
-        const response: any = await apiRoles.apiCreateRole(data);
-        console.log("Response from API:", response);
+        if (isEdit && id) {
+            // Update existing role
+            const updateData: RoleCreateUpdateRequest = {
+                roleName: data.roleName
+            };
+            const response: any = await apiRoles.apiUpdateRole(updateData,id);
+            if (response) {
+                window.location.href = "/roles";
+            }
+        } else {
+            const response: any = await apiRoles.apiCreateRole(data);   
+            if (response) {
+                window.location.href = "/roles";
+            }
+        }
         
+
     }
     
 
@@ -44,7 +87,7 @@ const RolesForm = () => {
                     <CardContent className="p-4">
                         <div className="space-y-2">
                             <label> Role Name </label>     
-                            <Input type="text" name="roleName" onChange={handleInputChange} placeholder="Enter role name"/>
+                            <Input type="text" name="roleName" value={data.roleName} onChange={handleInputChange} placeholder="Enter role name"/>
                         </div> 
                     </CardContent>
                 </Card>
@@ -59,7 +102,7 @@ const RolesForm = () => {
                             Back
                         </Button>
                         <Button variant="success_pro" onClick={onSubmit} className="text-white">
-                            Save
+                            {isEdit ? "Update" : "Save"}
                         </Button>
                     </div>
                 </CardContent>
